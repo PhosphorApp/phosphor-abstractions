@@ -37,8 +37,8 @@
 	<Authors>Phosphor</Authors>
 	<Description>The stable contract for authoring Phosphor source plug-ins (YouTube, Plex, and third-party music/video sources). Reference this package compile-only; the Phosphor host supplies the shared runtime copy.</Description>
 	<PackageTags>phosphor;plugin;jukebox;pinball;music;video</PackageTags>
-	<PackageProjectUrl>https://github.com/bhitney/phosphor</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/bhitney/phosphor</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/PhosphorApp/phosphor-abstractions</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/PhosphorApp/phosphor-abstractions</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>

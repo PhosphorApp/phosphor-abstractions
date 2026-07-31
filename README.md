@@ -46,4 +46,4 @@ Do not touch UI, assume a thread, or call back into the host except through the
 `PluginApi.Current` is the contract version. The package version tracks it. The host
 rejects plug-ins built against an incompatible `ApiVersion` rather than crashing.
 
-See the project repository for the full architecture notes.
+See the [project repository](https://github.com/PhosphorApp/phosphor-abstractions) for the full architecture notes.

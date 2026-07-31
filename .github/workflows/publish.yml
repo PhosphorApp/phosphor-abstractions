@@ -1,0 +1,46 @@
+name: Publish
+
+# Publishes Phosphor.Plugin.Abstractions to NuGet.org via Trusted Publishing (OIDC).
+# No stored API key: the NuGet/login action exchanges the GitHub OIDC token for a
+# short-lived key. The matching Trusted Publishing policy on NuGet.org is bound to
+# org PhosphorApp, repo PhosphorApp/phosphor-abstractions, workflow file publish.yml.
+#
+# Trigger: push a version tag (e.g. v0.14.0). The package version itself comes from
+# the csproj (<PackageVersion>), which tracks PluginApi.Current — keep the tag in sync.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write   # required for OIDC token exchange
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Pack
+        run: dotnet pack Phosphor.Plugin.Abstractions.csproj -c Release -o artifacts
+
+      - name: NuGet Login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          # NuGet.org account username that owns/administers the PhosphorApp org.
+          # CONFIRM THIS VALUE before the first tagged release.
+          user: REPLACE_WITH_NUGET_USERNAME
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push artifacts/*.nupkg
+          --api-key "${{ steps.login.outputs.NUGET_API_KEY }}"
+          --source https://www.nuget.org/api/v2/package
+          --skip-duplicate
