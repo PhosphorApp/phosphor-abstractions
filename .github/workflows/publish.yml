@@ -35,8 +35,7 @@ jobs:
         uses: NuGet/login@v1
         with:
           # NuGet.org account username that owns/administers the PhosphorApp org.
-          # CONFIRM THIS VALUE before the first tagged release.
-          user: REPLACE_WITH_NUGET_USERNAME
+          user: bthlonewolf
 
       - name: Push to NuGet.org
         run: >
