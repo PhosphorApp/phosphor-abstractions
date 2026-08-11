@@ -654,3 +654,32 @@ public interface IPlaybackStoppable
     /// </summary>
     void ReleasePlayback(string itemId);
 }
+
+/// <summary>
+/// Capability: a live source that can report the currently-airing track/segment for one of its
+/// live-stream items (e.g. a SiriusXM channel's now-playing song). Pull-based: the host polls
+/// <see cref="GetNowPlayingAsync"/> while such an item plays and stops when it stops, so the source
+/// stays stateless and needs no callback into the host. Sources whose live items have no per-track
+/// metadata simply don't implement this.
+/// </summary>
+public interface ILiveNowPlayingProvider
+{
+    /// <summary>
+    /// Returns the currently-airing track/segment for <paramref name="itemId"/> (a
+    /// <see cref="SourceItem.ItemId"/>), or <c>null</c> when nothing is available. Called repeatedly
+    /// on a background poll while the item plays; implementations should be cheap (reuse any live
+    /// session/auth) and must not throw. When the result's
+    /// <see cref="LiveNowPlaying.NextChangeUtc"/> is set, the host schedules its next poll near that
+    /// time instead of using its default interval.
+    /// </summary>
+    /// <param name="itemId">The playing item's <see cref="SourceItem.ItemId"/>.</param>
+    /// <param name="playbackPosition">
+    /// How far the host has been playing this live item (elapsed wall-clock since it started), when
+    /// known. Live streams play <em>behind</em> the broadcast edge by a variable amount, so a source
+    /// that timestamps its tracks should anchor "what's playing now" to its stream-start marker plus
+    /// this elapsed value rather than the live edge — otherwise the reported track drifts ahead of the
+    /// audio. <c>null</c> when the host can't supply it (the source then falls back to the live edge).
+    /// </param>
+    /// <param name="ct">Cancellation for the poll.</param>
+    Task<LiveNowPlaying?> GetNowPlayingAsync(string itemId, TimeSpan? playbackPosition, CancellationToken ct = default);
+}

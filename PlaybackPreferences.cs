@@ -47,3 +47,28 @@ public sealed record SourceMetadata(
     string? Description,
     IReadOnlyList<ChapterMarker> Chapters,
     DateTimeOffset? PublishedAt = null);
+
+/// <summary>
+/// The currently-airing track/segment on a live stream (e.g. a SiriusXM channel's now-playing
+/// song), fetched on demand by the host while the stream plays. All members are optional so a
+/// source can supply whatever it knows; an all-null instance means "nothing to show right now".
+/// </summary>
+/// <param name="Title">The track/song title, or the show/episode title for talk content.</param>
+/// <param name="Artist">The performing artist(s), or the host/presenter for talk content. Null when unknown.</param>
+/// <param name="Album">The album, when known. Null for talk content or when unavailable.</param>
+/// <param name="NextChangeUtc">
+/// When the source knows it, the wall-clock time the current track is expected to end (so the host
+/// can schedule its next poll near the change instead of polling on a fixed short interval). Null
+/// when unknown — the host then falls back to its default poll interval.
+/// </param>
+public sealed record LiveNowPlaying(
+    string? Title,
+    string? Artist = null,
+    string? Album = null,
+    DateTimeOffset? NextChangeUtc = null)
+{
+    /// <summary>True when at least one displayable field is set.</summary>
+    public bool HasAny => !string.IsNullOrWhiteSpace(Title)
+        || !string.IsNullOrWhiteSpace(Artist)
+        || !string.IsNullOrWhiteSpace(Album);
+}

@@ -10,6 +10,9 @@ public static class PluginApi
 {
     /// <summary>The contract version this build of the abstractions defines.</summary>
     /// <remarks>
+    /// 0.15.0 — added <see cref="ILiveNowPlayingProvider"/> + <c>LiveNowPlaying</c> (a live source
+    ///          reports the currently-airing track/segment; the host polls it while a live item plays).
+    ///          All additive — plug-ins built against 0.14 still load unchanged.
     /// 0.14.0 — added <see cref="SourceItem.IsPlayable"/> (surface-but-unplayable items),
     ///          <see cref="IExperimental"/> (provider marker for the settings badge), and
     ///          <see cref="IPlaybackReportable"/> + <c>PlaybackFailureKind</c> (host reports a
@@ -24,7 +27,7 @@ public static class PluginApi
     /// 0.9.0 — added <see cref="IConnectionTestable"/> (optional "test connection" capability).
     /// 0.8.0 — nested config sub-options (<c>ConfigOption.SubOptions</c>).
     /// </remarks>
-    public static readonly Version Current = new(0, 14, 0);
+    public static readonly Version Current = new(0, 15, 0);
 
     /// <summary>
     /// The oldest contract version this host still accepts. A plug-in built against an older
