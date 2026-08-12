@@ -683,3 +683,51 @@ public interface ILiveNowPlayingProvider
     /// <param name="ct">Cancellation for the poll.</param>
     Task<LiveNowPlaying?> GetNowPlayingAsync(string itemId, TimeSpan? playbackPosition, CancellationToken ct = default);
 }
+
+/// <summary>
+/// Capability: a live source that can report the item scheduled to air <em>next</em> on one of its
+/// live-stream items (e.g. the next SiriusXM track, or the next HDHomeRun EPG program). Pull-based:
+/// the host polls <see cref="GetUpNextAsync"/> while such an item plays and stops when it stops, so
+/// the source stays stateless and needs no callback into the host. Sources whose live items have no
+/// forward schedule simply don't implement this.
+/// </summary>
+public interface ILiveUpNextProvider
+{
+    /// <summary>
+    /// Returns the item scheduled to air NEXT on <paramref name="itemId"/> (a
+    /// <see cref="SourceItem.ItemId"/>), or <c>null</c> when unknown. Polled on a background loop
+    /// while the live item plays; reuse any live session/auth and do not throw.
+    /// <paramref name="playbackPosition"/> has the same meaning/anchor semantics as
+    /// <see cref="ILiveNowPlayingProvider"/> (live audio trails the broadcast edge).
+    /// </summary>
+    /// <param name="itemId">The playing item's <see cref="SourceItem.ItemId"/>.</param>
+    /// <param name="playbackPosition">
+    /// How far the host has been playing this live item (elapsed wall-clock since it started), when
+    /// known. Same anchor semantics as <see cref="ILiveNowPlayingProvider.GetNowPlayingAsync"/> —
+    /// live audio trails the broadcast edge. <c>null</c> when the host can't supply it.
+    /// </param>
+    /// <param name="ct">Cancellation for the poll.</param>
+    Task<LiveUpNext?> GetUpNextAsync(
+        string itemId, TimeSpan? playbackPosition, CancellationToken ct = default);
+}
+
+/// <summary>
+/// Reserved for a future discovery/search view: a forward window of upcoming items. Implement ONLY
+/// if the source can cheaply return a schedule. Inherits <see cref="ILiveUpNextProvider"/>
+/// (<c>list.First()</c> == "next"). No plug-in implements this yet — it is defined now so the
+/// signature is stable for future work.
+/// </summary>
+public interface ILiveUpcomingProvider : ILiveUpNextProvider
+{
+    /// <summary>
+    /// Returns up to <paramref name="maxItems"/> upcoming items within <paramref name="lookahead"/>
+    /// (both optional bounds; <c>null</c> = source default), ordered soonest-first. Empty when
+    /// unavailable.
+    /// </summary>
+    /// <param name="itemId">The playing item's <see cref="SourceItem.ItemId"/>.</param>
+    /// <param name="lookahead">Max forward time window to include, or <c>null</c> for the source default.</param>
+    /// <param name="maxItems">Max number of items to return.</param>
+    /// <param name="ct">Cancellation for the poll.</param>
+    Task<IReadOnlyList<LiveUpNext>> GetUpcomingAsync(
+        string itemId, TimeSpan? lookahead, int maxItems, CancellationToken ct = default);
+}

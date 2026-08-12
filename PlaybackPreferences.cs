@@ -72,3 +72,24 @@ public sealed record LiveNowPlaying(
         || !string.IsNullOrWhiteSpace(Artist)
         || !string.IsNullOrWhiteSpace(Album);
 }
+
+/// <summary>
+/// One upcoming ("up next" / "coming up") item on a live stream — the single next track/program, or
+/// each element of a forward schedule list. All members are optional so a source can supply whatever
+/// it knows; an all-null instance means "nothing to show".
+/// </summary>
+/// <param name="Title">Song title OR program name.</param>
+/// <param name="Subtitle">Artist (music) / episode or short description (TV). Null when unknown.</param>
+/// <param name="Album">Album, when known. Null otherwise.</param>
+/// <param name="StartsUtc">When the item begins (aligns with LiveNowPlaying.NextChangeUtc). Null if unknown.</param>
+/// <param name="EndsUtc">When the item ends (slot boundary for a coming-up list). Null if unknown.</param>
+public sealed record LiveUpNext(
+    string? Title,
+    string? Subtitle = null,
+    string? Album = null,
+    DateTimeOffset? StartsUtc = null,
+    DateTimeOffset? EndsUtc = null)
+{
+    /// <summary>True when at least one displayable field is set.</summary>
+    public bool HasAny => !string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Subtitle);
+}
