@@ -10,6 +10,10 @@ public static class PluginApi
 {
     /// <summary>The contract version this build of the abstractions defines.</summary>
     /// <remarks>
+    /// 0.17.0 — added <see cref="IFavoriteMetadataRefresh"/> (a source asynchronously refreshes a
+    ///          favorited item's display metadata so the host can heal stale aggregated-favorite
+    ///          records when the Favorites view is opened). All additive — plug-ins built against
+    ///          0.16 still load unchanged.
     /// 0.16.0 — added <see cref="ILiveUpNextProvider"/> + <see cref="ILiveUpcomingProvider"/> +
     ///          <c>LiveUpNext</c> (live "up next"; reserved "coming up" list). All additive — plug-ins
     ///          built against 0.15 still load unchanged.
@@ -30,7 +34,7 @@ public static class PluginApi
     /// 0.9.0 — added <see cref="IConnectionTestable"/> (optional "test connection" capability).
     /// 0.8.0 — nested config sub-options (<c>ConfigOption.SubOptions</c>).
     /// </remarks>
-    public static readonly Version Current = new(0, 16, 0);
+    public static readonly Version Current = new(0, 17, 0);
 
     /// <summary>
     /// The oldest contract version this host still accepts. A plug-in built against an older

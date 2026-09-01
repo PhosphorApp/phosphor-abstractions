@@ -432,6 +432,28 @@ public interface IFavoritable
 }
 
 /// <summary>
+/// Optional capability: asynchronously refresh the <em>display</em> metadata (title, subtitle,
+/// thumbnail, duration) for a favorited item so a host-level aggregated "Favorites" view can heal
+/// stale records. Complements the synchronous <see cref="IFavoritable.GetFavorite"/>, which is cheap
+/// and cache-only: when a source's catalog hasn't loaded this session (a cold start, or its on-disk
+/// cache has expired), <c>GetFavorite</c> can only return a minimal id-carrying item with no friendly
+/// name. The host calls <see cref="RefreshFavoriteAsync"/> once per source when the Favorites view is
+/// opened, letting the source do whatever authenticated fetch it needs (e.g. reload the SiriusXM
+/// lineup) and return current metadata. The host writes the result back into its persisted index so
+/// subsequent opens render instantly. Returns <c>null</c> when the item can't be refreshed right now
+/// (offline, removed) — the host then keeps whatever it already had.
+/// </summary>
+public interface IFavoriteMetadataRefresh
+{
+    /// <summary>
+    /// Returns a <see cref="SourceItem"/> carrying current display metadata for the favorited
+    /// <paramref name="itemId"/> (loading the catalog if needed), or <c>null</c> if it can't be
+    /// produced right now. Must not throw for expected failures (offline, auth) — return <c>null</c>.
+    /// </summary>
+    Task<SourceItem?> RefreshFavoriteAsync(string itemId, CancellationToken ct = default);
+}
+
+/// <summary>
 /// Optional capability: rebuild a fully-playable <see cref="SourceItem"/> from just a persisted
 /// <see cref="SourceItem.ItemId"/>, with no prior in-memory browse state. The host uses this to
 /// re-resolve items whose opaque <see cref="SourceItem.SourceState"/> did not survive being persisted
