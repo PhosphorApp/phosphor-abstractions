@@ -37,6 +37,13 @@ public sealed class SourceCategory
     public bool HasSubCategories { get; init; }
 
     /// <summary>
+    /// True when this node's paged items are ordered by title (ascending). A host may then offer a
+    /// letter jump bar when the source also implements <see cref="IAlphaIndexable"/>. Leave false for
+    /// recency-, popularity- or relevance-ordered nodes (e.g. "Recently Added", hubs, playlists).
+    /// </summary>
+    public bool IsTitleSorted { get; init; }
+
+    /// <summary>
     /// Plug-in-private payload handed back on browse, opaque to the host. An in-memory OPTIMIZATION
     /// only: it is not persisted and may be <c>null</c> when the host reconstructs a node from a
     /// stored <see cref="CategoryId"/>. A source must not depend on it being present — see

@@ -10,6 +10,10 @@ public static class PluginApi
 {
     /// <summary>The contract version this build of the abstractions defines.</summary>
     /// <remarks>
+    /// 0.18.0 — added <see cref="SourceCategory.IsTitleSorted"/> + <see cref="IAlphaIndexable"/> (+
+    ///          <see cref="AlphaIndex"/>/<see cref="AlphaIndexEntry"/>): a title-sorted paged node can
+    ///          expose a letter index so the host offers a jump bar. All additive — plug-ins built
+    ///          against 0.17 still load unchanged.
     /// 0.17.0 — added <see cref="IFavoriteMetadataRefresh"/> (a source asynchronously refreshes a
     ///          favorited item's display metadata so the host can heal stale aggregated-favorite
     ///          records when the Favorites view is opened). All additive — plug-ins built against
@@ -34,7 +38,7 @@ public static class PluginApi
     /// 0.9.0 — added <see cref="IConnectionTestable"/> (optional "test connection" capability).
     /// 0.8.0 — nested config sub-options (<c>ConfigOption.SubOptions</c>).
     /// </remarks>
-    public static readonly Version Current = new(0, 17, 0);
+    public static readonly Version Current = new(0, 18, 0);
 
     /// <summary>
     /// The oldest contract version this host still accepts. A plug-in built against an older

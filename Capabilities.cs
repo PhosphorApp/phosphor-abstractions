@@ -753,3 +753,36 @@ public interface ILiveUpcomingProvider : ILiveUpNextProvider
     Task<IReadOnlyList<LiveUpNext>> GetUpcomingAsync(
         string itemId, TimeSpan? lookahead, int maxItems, CancellationToken ct = default);
 }
+
+/// <summary>
+/// One bucket of an <see cref="AlphaIndex"/>: a label (typically a letter, or "#" for non-alphabetic
+/// titles; a source may use any label, e.g. kana or Cyrillic), where that bucket starts in the
+/// title-sorted list, and how many items it holds.
+/// </summary>
+/// <param name="Label">Display label for the bucket.</param>
+/// <param name="StartOffset">Zero-based offset of the bucket's first item in the sorted list.</param>
+/// <param name="Count">Number of items in the bucket.</param>
+public sealed record AlphaIndexEntry(string Label, int StartOffset, int Count);
+
+/// <summary>
+/// A title-sorted list's letter index: ordered buckets whose offsets are valid for
+/// <see cref="IPagedBrowsable.BrowsePageAsync"/> on the same category.
+/// </summary>
+public sealed class AlphaIndex
+{
+    /// <summary>Buckets in list order. Labels with no items may be omitted.</summary>
+    public IReadOnlyList<AlphaIndexEntry> Entries { get; init; } = [];
+}
+
+/// <summary>
+/// Capability: a letter index for a title-sorted paged node, so the host can offer a jump bar
+/// ("A B C …") that seeks straight to a bucket's offset. The host calls this when entering a paged
+/// node on a source that also implements <see cref="IPagedBrowsable"/>; return <c>null</c> for
+/// nodes that are not title-sorted (see <see cref="SourceCategory.IsTitleSorted"/>). Offsets MUST
+/// match the order <c>BrowsePageAsync</c> returns.
+/// </summary>
+public interface IAlphaIndexable
+{
+    /// <summary>Returns the letter index for <paramref name="category"/>, or <c>null</c> if unavailable.</summary>
+    Task<AlphaIndex?> GetAlphaIndexAsync(SourceCategory category, CancellationToken ct = default);
+}

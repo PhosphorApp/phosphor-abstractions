@@ -26,6 +26,8 @@ your types (two assembly identities = two different `IPhosphorSource` types).
 3. Implement the capability interfaces your source supports — only what it can do:
    - `ITextSearchCapable` — free-text search
    - `IBrowsable` — hierarchical browse (libraries → artists → albums → tracks, …)
+   - `IPagedBrowsable` — offset-paged browse for large flat lists (lazy "load more")
+   - `IAlphaIndexable` — a letter index for title-sorted paged lists, so the host can offer an A–Z jump bar (set `SourceCategory.IsTitleSorted`)
    - `IPlayableResolver` — resolve an item to a playable `ResolvedStream`
    - `IDownloadable` — download raw streams for the host's cache
    - `IConfigurable` — interactive setup actions (e.g. "browse libraries")
